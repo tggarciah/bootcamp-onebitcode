@@ -24,6 +24,11 @@ module EcommerceApi
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
+    #i18n config de idioma
+    config.i18n.default_locale = :'pt-BR'
+    #carregar os arquivos de tradução em caminhos personalizados
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/**/*.{rb,yml}')]
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
