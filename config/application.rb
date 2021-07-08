@@ -1,17 +1,17 @@
 require_relative 'boot'
 
-require "rails"
+require 'rails'
 # Pick the frameworks you want:
-require "active_model/railtie"
-require "active_job/railtie"
-require "active_record/railtie"
-require "active_storage/engine"
-require "action_controller/railtie"
-require "action_mailer/railtie"
-require "action_mailbox/engine"
-require "action_text/engine"
-require "action_view/railtie"
-require "action_cable/engine"
+require 'active_model/railtie'
+require 'active_job/railtie'
+require 'active_record/railtie'
+require 'active_storage/engine'
+require 'action_controller/railtie'
+require 'action_mailer/railtie'
+require 'action_mailbox/engine'
+require 'action_text/engine'
+require 'action_view/railtie'
+require 'action_cable/engine'
 # require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
@@ -24,9 +24,9 @@ module EcommerceApi
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
-    #i18n config de idioma
+    # i18n config de idioma
     config.i18n.default_locale = :'pt-BR'
-    #carregar os arquivos de tradução em caminhos personalizados
+    # carregar os arquivos de tradução em caminhos personalizados
     config.i18n.load_path += Dir[Rails.root.join('config/locales/**/*.{rb,yml}')]
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -38,5 +38,7 @@ module EcommerceApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    config.autoload_paths += %W["#{config.root}/app/validators/"]
   end
 end
