@@ -18,6 +18,7 @@ RSpec.describe 'Admin::V1::Categories', type: :request do
     end
   end
 
+  # Atualização
   context 'POST /categories' do
     let(:url) { '/admin/v1/categories' }
 
@@ -35,7 +36,7 @@ RSpec.describe 'Admin::V1::Categories', type: :request do
       # nesse cenário esperamos que a categoria inserida na requisção anterior seja a última do BD
       it 'returns last added Category' do
         post url, headers: auth_header(user), params: category_params
-        expect_category = Category.last.as_json(only: %i(id name))
+        expect_category = Category.last.as_json(only: %i[id name])
         expect(body_json['category']).to eq expect_category
       end
 
@@ -67,4 +68,58 @@ RSpec.describe 'Admin::V1::Categories', type: :request do
       end
     end
   end
+
+  # PATCH é o verbo HTTP para atualização parcial
+  context 'PATCH categories/:id' do
+    let(:category) { create(:category) }
+    let(:url) { "/admin/v1/categories/#{category.id}" }
+
+    context 'with valid params' do
+      let(:new_name) { 'My new Category' }
+      let(:category_params) { {category: {name: new_name} }.to_json }
+
+      it 'updates Category' do
+        patch url, headers: auth_header(user), params: category_params
+        category.reload
+        expect(category.name).to eq new_name
+      end
+
+      it 'returns updated category' do
+        patch url, headers: auth_header(user), params: category_params
+        category.reload
+        expect_category = category.as_json(only: %i(id name))
+        expect(body_json['category']).to eq expect_category
+      end
+
+      it 'returns success status' do
+        patch url, headers: auth_header(user), params: category_params
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'with invalid params' do
+      let(:category_invalid_params) do
+        { category: attributes_for(:category, name: nil) }.to_json
+      end
+
+      it 'does not update Category' do
+        old_name = category.name
+        patch url, headers: auth_header(user), params: category_invalid_params
+        category.reload
+        expect(category.name).to eq old_name
+      end
+
+      it 'return erros messages' do
+        patch url, headers: auth_header(user), params: category_invalid_params
+        expect(body_json['errors']['fields']).to have_key('name')
+      end
+
+      it 'returns unprocessable_entity status' do
+        patch url, headers: auth_header(user), params: category_invalid_params
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
+  # PUT é o verbo HTTP para atualização completa
 end
