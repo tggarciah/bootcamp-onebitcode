@@ -69,14 +69,14 @@ RSpec.describe 'Admin::V1::Categories', type: :request do
     end
   end
 
-  # PATCH é o verbo HTTP para atualização parcial
+  # PATCH é o verbo HTTP para atualização parcial (PUT é o verbo HTTP para atualização completa)
   context 'PATCH categories/:id' do
     let(:category) { create(:category) }
     let(:url) { "/admin/v1/categories/#{category.id}" }
 
     context 'with valid params' do
       let(:new_name) { 'My new Category' }
-      let(:category_params) { {category: {name: new_name} }.to_json }
+      let(:category_params) { { category: { name: new_name } }.to_json }
 
       it 'updates Category' do
         patch url, headers: auth_header(user), params: category_params
@@ -87,7 +87,7 @@ RSpec.describe 'Admin::V1::Categories', type: :request do
       it 'returns updated category' do
         patch url, headers: auth_header(user), params: category_params
         category.reload
-        expect_category = category.as_json(only: %i(id name))
+        expect_category = category.as_json(only: %i[id name])
         expect(body_json['category']).to eq expect_category
       end
 
@@ -121,5 +121,31 @@ RSpec.describe 'Admin::V1::Categories', type: :request do
     end
   end
 
-  # PUT é o verbo HTTP para atualização completa
+  context 'DELETE categories/:id' do
+    let!(:category) { create(:category) }
+    let(:url) { "/admin/v1/categories/#{category.id}" }
+
+    it 'removes Category' do
+      expect do
+        delete url, headers: auth_header(user)
+      end.to change(Category, :count).by(-1)
+    end
+
+    it 'returns success status' do
+      delete url, headers: auth_header(user)
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it 'does not return any body content' do
+      delete url, headers: auth_header(user)
+      expect(body_json).to_not be_present
+    end
+
+    it 'removes all associated product categories' do
+      product_categories = create_list(:product_category, 3, category: category)
+      delete url, headers: auth_header(user)
+      expected_product_categories = ProductCategory.where(id: product_categories.map(&:id))
+      expect(expected_product_categories).to eq []
+    end
+  end
 end
