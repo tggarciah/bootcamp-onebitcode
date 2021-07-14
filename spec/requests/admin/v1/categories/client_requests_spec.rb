@@ -11,6 +11,14 @@ RSpec.describe 'Admin::V1::Categories as :client', type: :request do
     include_examples 'forbidden access' # com essa chamada estamos incluido os it do arquivo forbidden_access_example.rb
   end
 
+  context 'GET /categories/:id' do
+    let(:url) { "/admin/v1/categories/#{category.id}" }
+    let!(:category) { create(:category) }
+
+    before(:each) { get url, headers: auth_header(user) }
+    include_examples 'forbidden access' # com essa chamada estamos incluido os it do arquivo forbidden_access_example.rb
+  end
+
   context 'POST /categories' do
     let(:url) { '/admin/v1/categories' }
 
