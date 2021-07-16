@@ -26,7 +26,7 @@ module Admin
 
     private
 
-    def fix_pagination_valuesAPI paging refactoring
+    def fix_pagination_values
       @pagination[:page] = @searchable_model.model::DEFAULT_PAGE if @pagination[:page] <= 0
       @pagination[:length] = @searchable_model.model::MAX_PER_PAGE if @pagination[:length] <= 0
     end
