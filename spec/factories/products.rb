@@ -7,8 +7,8 @@ FactoryBot.define do
     status { :available }
 
     # sintaxe para criar um game ao criar um produto
-    after :build do | product |
-      product.productable = create(:game)
+    after :build do |product|
+      product.productable ||= create(:game)
     end
   end
 end
