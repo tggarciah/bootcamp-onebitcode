@@ -1,4 +1,7 @@
 class Product < ApplicationRecord
+  include LikeSearchable
+  include Paginatable
+
   belongs_to :productable, polymorphic: true
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
@@ -13,7 +16,4 @@ class Product < ApplicationRecord
 
   validates :status, presence: true
   enum status: { available: 1, unavailable: 2 }
-
-  include NameSearchable
-  include Paginatable  
 end

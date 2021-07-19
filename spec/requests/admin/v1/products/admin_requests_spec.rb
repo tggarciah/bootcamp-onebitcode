@@ -13,7 +13,7 @@ RSpec.describe "Admin V1 Products as :admin", type: :request do
         get url, headers: auth_header(user)
         expect(body_json['products'].count).to eq 10
       end
-      
+
       it "returns Products with :productable following default pagination" do
         get url, headers: auth_header(user)
         expected_return = products[0..9].map do |product| 
@@ -444,8 +444,11 @@ end
 
 def build_game_product_json(product)
   json = product.as_json(only: %i(id name description price status))
-  json['categories'] = product.categories.map(&:name)
   json['image_url'] = rails_blob_url(product.image)
   json['productable'] = product.productable_type.underscore
-  json.merge product.productable.as_json(only: %i(mode release_date developer))
+  json['productable_id'] = product.productable_id
+  json['categories'] = product.categories.map(&:name)
+  json.merge! product.productable.as_json(only: %i(mode release_date developer))
+  # json['system_requirement'] = product.productable.system_requirement.as_json
+  json
 end
