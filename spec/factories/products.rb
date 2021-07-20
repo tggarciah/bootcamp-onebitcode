@@ -5,6 +5,7 @@ FactoryBot.define do
     price { Faker::Commerce.price(range: 100.0..400.00) }
     image { Rack::Test::UploadedFile.new(Rails.root.join('spec/support/images/product_image.png')) }
     status { :available }
+    featured { true }
 
     # sintaxe para criar um game ao criar um produto
     after :build do |product|
